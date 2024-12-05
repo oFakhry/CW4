@@ -7,7 +7,7 @@ public class Conference {
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Map<String, Session> sessions;
+    private List<Session> sessions = new ArrayList<>();
     private Set<Attendee> attendees;
     private Set<Speaker> speakers;
 
@@ -18,7 +18,6 @@ public class Conference {
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.sessions = new HashMap<>();
         this.attendees = new HashSet<>();
         this.speakers = new HashSet<>();
     }
@@ -44,8 +43,8 @@ public class Conference {
         return endDate;
     }
 
-    public Map<String, Session> getSessions() {
-        return sessions;
+    public List<Session> getSessions() {
+        return new ArrayList<>(sessions);
     }
 
     public Set<Attendee> getAttendees() {
@@ -55,6 +54,7 @@ public class Conference {
     public Set<Speaker> getSpeakers() {
         return speakers;
     }
+
 
     // Setters
     public void setId(String id) {
