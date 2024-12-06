@@ -7,12 +7,12 @@ public class Conference {
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
-    private List<Session> sessions = new ArrayList<>();
     private Set<Attendee> attendees;
     private Set<Speaker> speakers;
+    private final SessionService sessionService; // Use SessionService for session management
 
     // Constructor
-    public Conference(String id, String name, String description, LocalDate startDate, LocalDate endDate) {
+    public Conference(String id, String name, String description, LocalDate startDate, LocalDate endDate, SessionService sessionService) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -20,6 +20,7 @@ public class Conference {
         this.endDate = endDate;
         this.attendees = new HashSet<>();
         this.speakers = new HashSet<>();
+        this.sessionService = sessionService;
     }
 
     // Getters
@@ -43,10 +44,6 @@ public class Conference {
         return endDate;
     }
 
-    public List<Session> getSessions() {
-        return new ArrayList<>(sessions);
-    }
-
     public Set<Attendee> getAttendees() {
         return attendees;
     }
@@ -55,6 +52,9 @@ public class Conference {
         return speakers;
     }
 
+    public List<Session> getSessions() {
+        return sessionService.getAllSessions();
+    }
 
     // Setters
     public void setId(String id) {
@@ -79,63 +79,72 @@ public class Conference {
 
     // Business Logic Methods
     public void addSession(Session session) {
-        if (sessions.containsKey(session.getId())) {
-            throw new IllegalArgumentException("Session with this ID already exists.");
+        try {
+            sessionService.createSession(
+                    session.getName(),
+                    session.getStartTime(),
+                    session.getEndTime(),
+                    session.getStatus()
+            );
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error adding session: " + e.getMessage());
         }
-        sessions.put(session.getId(), session);
     }
 
+    // Modify the session (this method is updated to call SessionService)
     public void modifySession(String sessionId, Session updatedSession) {
-        if (!sessions.containsKey(sessionId)) {
-            throw new IllegalArgumentException("Session with this ID does not exist.");
-        }
-        sessions.put(sessionId, updatedSession);
+        // Use SessionService to update session details
+        sessionService.updateSessionDetails(
+                sessionId,
+                updatedSession.getName(),
+                updatedSession.getStartTime(),
+                updatedSession.getEndTime(),
+                updatedSession.getStatus()
+        );
     }
 
+    // Remove session (this method will call deleteSession from SessionService)
     public void removeSession(String sessionId) {
-        if (!sessions.containsKey(sessionId)) {
-            throw new IllegalArgumentException("Session with this ID does not exist.");
-        }
-        sessions.remove(sessionId);
+        sessionService.deleteSession(sessionId);
     }
 
+    // Register an attendee for a session (this method is updated to call SessionService)
     public void registerAttendeeForSession(String sessionId, String attendeeId) {
-        if (!sessions.containsKey(sessionId)) {
-            throw new IllegalArgumentException("Session with this ID does not exist.");
-        }
-        Session session = sessions.get(sessionId);
-        session.registerAttendee(attendeeId);
+        sessionService.registerAttendee(sessionId, attendeeId);  // Use SessionService to register attendee
     }
 
+    // Deregister an attendee from a session (this method is updated to call SessionService)
     public void deregisterAttendeeFromSession(String sessionId, String attendeeId) {
-        if (!sessions.containsKey(sessionId)) {
-            throw new IllegalArgumentException("Session with this ID does not exist.");
-        }
-        Session session = sessions.get(sessionId);
-        session.deregisterAttendee(attendeeId);
+        sessionService.deregisterAttendee(sessionId, attendeeId);  // Use SessionService to deregister attendee
     }
 
+
+    // Add an attendee to the conference
     public void addAttendee(Attendee attendee) {
         attendees.add(attendee);
     }
 
+    // Remove an attendee from the conference
     public void removeAttendee(String attendeeId) {
         attendees.removeIf(attendee -> attendee.getId().equals(attendeeId));
     }
 
+    // Add a speaker to the conference
     public void addSpeaker(Speaker speaker) {
         speakers.add(speaker);
     }
 
+    // Remove a speaker from the conference
     public void removeSpeaker(String speakerId) {
         speakers.removeIf(speaker -> speaker.getId().equals(speakerId));
     }
 
+    // Generate a certificate for an attendee
     public String generateCertificateForAttendee(String sessionId, String attendeeId) {
-        if (!sessions.containsKey(sessionId)) {
+        Session session = sessionService.findSessionById(sessionId);
+        if (session == null) {
             throw new IllegalArgumentException("Session with this ID does not exist.");
         }
-        Session session = sessions.get(sessionId);
         if (!session.getAttendees().contains(attendeeId)) {
             throw new IllegalArgumentException("Attendee is not registered for this session.");
         }
