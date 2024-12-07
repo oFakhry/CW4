@@ -1,1 +1,8 @@
-[{"id":"SESSION-1","name":"fakhry","startTime"
+[ {
+  "id" : "SESSION-1",
+  "name" : "Fakhry",
+  "startTime" : "2025-02-02T00:01:00",
+  "endTime" : "2025-02-02T00:02:00",
+  "status" : "COMPLETED",
+  "attendees" : [ ]
+} ]

@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,6 +16,7 @@ public class SessionRepository {
     public SessionRepository(String filePath) {
         this.file = new File(filePath);
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
         this.sessions = loadSessionsFromFile();
     }
 
@@ -64,12 +66,13 @@ public class SessionRepository {
     // Save sessions to the JSON file
     private void saveSessionsToFile() {
         try {
-            objectMapper.writeValue(file, sessions);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, sessions);
         } catch (IOException e) {
             System.err.println("Error saving sessions to file: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 
     // Write all session information to a file in a human-readable format
     public void writeAllSessionsToFile(String outputFilePath) {

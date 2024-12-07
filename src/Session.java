@@ -1,20 +1,29 @@
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Session {
+    @JsonProperty("id")
     private String id;
+
+    @JsonProperty("name")
     private String name;
 
+    @JsonProperty("startTime")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startTime;
 
+    @JsonProperty("endTime")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endTime;
 
+    @JsonProperty("status")
     private SessionStatus status;
+
+    @JsonProperty("attendees")
     private Set<String> attendees;
 
     public Session() {
@@ -29,6 +38,8 @@ public class Session {
         this.status = status;
         this.attendees = new HashSet<>();
     }
+
+    @JsonProperty("id")
 
     public String getId() {
         return id;
