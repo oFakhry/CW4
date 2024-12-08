@@ -1,8 +1,10 @@
 [ {
   "id" : "SESSION-1",
-  "name" : "Fakhry",
+  "name" : "Test",
   "startTime" : "2025-02-02T00:01:00",
   "endTime" : "2025-02-02T00:02:00",
   "status" : "COMPLETED",
-  "attendees" : [ ]
+  "attendees" : [ ],
+  "speakers" : [ ],
+  "feedback" : [ ]
 } ]

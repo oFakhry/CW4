@@ -28,17 +28,6 @@ public class SessionService {
         return sessionRepository.findAll();
     }
 
-    public void registerAttendee(String sessionId, String attendeeId) {
-        Session session = findSessionById(sessionId);
-        session.registerAttendee(attendeeId);
-        sessionRepository.save(session);
-    }
-
-    public void deregisterAttendee(String sessionId, String attendeeId) {
-        Session session = findSessionById(sessionId);
-        session.deregisterAttendee(attendeeId);
-        sessionRepository.save(session);
-    }
 
     public void deleteSession(String sessionId) {
         sessionRepository.deleteById(sessionId);

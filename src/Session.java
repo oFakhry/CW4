@@ -26,8 +26,16 @@ public class Session {
     @JsonProperty("attendees")
     private Set<String> attendees;
 
+    @JsonProperty("speakers")
+    private Set<Speaker> speakers;  // Set of speakers assigned to the session
+
+    @JsonProperty("feedback")
+    private Set<Feedback> feedbacks;  // Set of feedback for the session
+
     public Session() {
         this.attendees = new HashSet<>();
+        this.speakers = new HashSet<>();
+        this.feedbacks = new HashSet<>();
     }
 
     public Session(String id, String name, LocalDateTime startTime, LocalDateTime endTime, SessionStatus status) {
@@ -37,10 +45,25 @@ public class Session {
         this.endTime = endTime;
         this.status = status;
         this.attendees = new HashSet<>();
+        this.speakers = new HashSet<>();
+        this.feedbacks = new HashSet<>();
     }
 
-    @JsonProperty("id")
+    // Method to add a speaker to the session
+    public void addSpeaker(Speaker speaker) {
+        if (speaker != null) {
+            this.speakers.add(speaker);
+        }
+    }
 
+    // Method to add feedback from an attendee
+    public void addFeedback(Attendee attendee, String feedback) {
+        if (attendee != null && feedback != null && !feedback.isEmpty()) {
+            this.feedbacks.add(new Feedback(attendee, feedback));
+        }
+    }
+
+    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -65,6 +88,14 @@ public class Session {
         return attendees;
     }
 
+    public Set<Speaker> getSpeakers() {
+        return speakers;
+    }
+
+    public Set<Feedback> getFeedbacks() {
+        return feedbacks;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -81,20 +112,6 @@ public class Session {
         this.status = status;
     }
 
-    public void registerAttendee(String attendeeId) {
-        if (attendees.contains(attendeeId)) {
-            throw new IllegalArgumentException("Attendee already registered.");
-        }
-        attendees.add(attendeeId);
-    }
-
-    public void deregisterAttendee(String attendeeId) {
-        if (!attendees.contains(attendeeId)) {
-            throw new IllegalArgumentException("Attendee not registered.");
-        }
-        attendees.remove(attendeeId);
-    }
-
     @Override
     public String toString() {
         return "Session{" +
@@ -104,6 +121,8 @@ public class Session {
                 ", endTime=" + endTime +
                 ", status=" + status +
                 ", attendees=" + attendees +
+                ", speakers=" + speakers +
+                ", feedbacks=" + feedbacks +
                 '}';
     }
 }

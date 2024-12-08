@@ -108,17 +108,6 @@ public class Conference {
         sessionService.deleteSession(sessionId);
     }
 
-    // Register an attendee for a session (this method is updated to call SessionService)
-    public void registerAttendeeForSession(String sessionId, String attendeeId) {
-        sessionService.registerAttendee(sessionId, attendeeId);  // Use SessionService to register attendee
-    }
-
-    // Deregister an attendee from a session (this method is updated to call SessionService)
-    public void deregisterAttendeeFromSession(String sessionId, String attendeeId) {
-        sessionService.deregisterAttendee(sessionId, attendeeId);  // Use SessionService to deregister attendee
-    }
-
-
     // Add an attendee to the conference
     public void addAttendee(Attendee attendee) {
         attendees.add(attendee);
