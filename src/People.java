@@ -1,8 +1,8 @@
 import java.util.*;
 
 public abstract class People {
-    private String id;
-    private String name;
+    String id;
+    String name;
     private String email;
     private Map<String, Session> sessionSchedule;
 
