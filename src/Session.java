@@ -57,11 +57,20 @@ public class Session {
     }
 
     // Method to add feedback from an attendee
-    public void addFeedback(Attendee attendee, String feedback) {
-        if (attendee != null && feedback != null && !feedback.isEmpty()) {
-            this.feedbacks.add(new Feedback(attendee, feedback));
+    public void addFeedback(String attendeeId, String conferenceId, String feedbackText, FeedbackRepository feedbackRepository) {
+        if (attendeeId == null || attendeeId.isEmpty()) {
+            throw new IllegalArgumentException("Attendee ID cannot be null or empty.");
         }
+        if (conferenceId == null || conferenceId.isEmpty()) {
+            throw new IllegalArgumentException("Conference ID cannot be null or empty.");
+        }
+        if (feedbackText == null || feedbackText.isEmpty()) {
+            throw new IllegalArgumentException("Feedback text cannot be null or empty.");
+        }
+        // Add the feedback to the repository
+        feedbackRepository.addFeedback(attendeeId, conferenceId, feedbackText);
     }
+
 
     // Getters and Setters
     public String getId() {

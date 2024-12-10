@@ -34,10 +34,29 @@ public class Organizer extends People {
         session.addSpeaker(speaker);
     }
 
-    // Manage attendee feedback
-    public void manageAttendeeFeedback(Attendee attendee, Session session, String feedback) {
-        session.addFeedback(attendee, feedback);
+    // Manage attendee feedback using attendeeId
+    public void manageAttendeeFeedback(String attendeeId, String conferenceId, String feedbackText, FeedbackRepository feedbackRepository, Session session) {
+        if (attendeeId == null || attendeeId.isEmpty()) {
+            throw new IllegalArgumentException("Attendee ID cannot be null or empty.");
+        }
+        if (conferenceId == null || conferenceId.isEmpty()) {
+            throw new IllegalArgumentException("Conference ID cannot be null or empty.");
+        }
+        if (feedbackText == null || feedbackText.isEmpty()) {
+            throw new IllegalArgumentException("Feedback text cannot be null or empty.");
+        }
+        if (feedbackRepository == null) {
+            throw new IllegalArgumentException("Feedback repository cannot be null.");
+        }
+        if (session == null) {
+            throw new IllegalArgumentException("Session cannot be null.");
+        }
+
+        // Add the feedback to the session and repository
+        session.addFeedback(attendeeId, conferenceId, feedbackText, feedbackRepository);
     }
+
+
 
     // Manage conference details
     public void updateConferenceDetails(String conferenceId, String name, String description, LocalDate startDate, LocalDate endDate) {

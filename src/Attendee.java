@@ -1,40 +1,25 @@
-public class Attendee {
-    private String id;
-    private String name;
-    private String email;
+import java.util.*;
 
-    // Constructor
+public class Attendee extends People {
+    private List<Conference> registeredConferences; // Tracks conferences the attendee has registered for
+
     public Attendee(String id, String name, String email) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
+        super(id, name, email);
+        this.registeredConferences = new ArrayList<>();
     }
 
-    // Getters
-    public String getId() {
-        return id;
+    // Register for a conference
+    public void registerForConference(Conference conference) {
+        if (!registeredConferences.contains(conference)) {
+            registeredConferences.add(conference);
+            conference.addAttendee(this);
+        } else {
+            throw new IllegalArgumentException("Already registered for this conference.");
+        }
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    // Setters
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    // Business Logic
-    public void updateProfile(String newName, String newEmail) {
-        this.name = newName;
-        this.email = newEmail;
+    // Get registered conferences
+    public List<Conference> getRegisteredConferences() {
+        return registeredConferences;
     }
 }
