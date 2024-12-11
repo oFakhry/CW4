@@ -1,7 +1,9 @@
 [ {
-  "id" : "new-id",
-  "name" : "Fakhry",
-  "email" : "fakhry@fakhry.com",
-  "conferences" : [ ],
-  "registeredSpeakers" : [ ]
-} ]
+  "id" : "USR-1733879433415",
+  "name" : "omar",
+  "email" : "omar@gmail.com",
+  "conferences" : [ {
+    "id" : "1",
+    "name" : "efsdf",
+    "description" : "sdfsd",
+    "startDate"

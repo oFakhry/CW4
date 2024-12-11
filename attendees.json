@@ -1,6 +1,7 @@
 [ {
-  "id" : "USR-1733835267908",
-  "name" : "omar",
-  "email" : "omar@gmail.com",
-  "registeredConferences" : [ ]
+  "id" : "A001",
+  "name" : "John Doe",
+  "email" : "john@example.com",
+  "registeredConferences" : [ ],
+  "password" : "password123"
 } ]

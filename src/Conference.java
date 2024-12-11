@@ -56,6 +56,11 @@ public class Conference {
         return sessionService.getAllSessions();
     }
 
+    // New getter for SessionService
+    public SessionService getSessionService() {
+        return this.sessionService;
+    }
+
     // Setters
     public void setId(String id) {
         this.id = id;
@@ -91,7 +96,6 @@ public class Conference {
         }
     }
 
-    // Modify the session (this method is updated to call SessionService)
     public void modifySession(String sessionId, Session updatedSession) {
         // Use SessionService to update session details
         sessionService.updateSessionDetails(
@@ -103,32 +107,26 @@ public class Conference {
         );
     }
 
-    // Remove session (this method will call deleteSession from SessionService)
     public void removeSession(String sessionId) {
         sessionService.deleteSession(sessionId);
     }
 
-    // Add an attendee to the conference
     public void addAttendee(Attendee attendee) {
         attendees.add(attendee);
     }
 
-    // Remove an attendee from the conference
     public void removeAttendee(String attendeeId) {
         attendees.removeIf(attendee -> attendee.getId().equals(attendeeId));
     }
 
-    // Add a speaker to the conference
     public void addSpeaker(Speaker speaker) {
         speakers.add(speaker);
     }
 
-    // Remove a speaker from the conference
     public void removeSpeaker(String speakerId) {
         speakers.removeIf(speaker -> speaker.getId().equals(speakerId));
     }
 
-    // Generate a certificate for an attendee
     public String generateCertificateForAttendee(String sessionId, String attendeeId) {
         Session session = sessionService.findSessionById(sessionId);
         if (session == null) {

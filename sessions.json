@@ -1,9 +1,27 @@
 [ {
   "id" : "SESSION-1",
-  "name" : "Test",
+  "name" : "dc",
   "startTime" : "2025-02-02T00:01:00",
   "endTime" : "2025-02-02T00:02:00",
-  "status" : "COMPLETED",
+  "status" : "IN_PROGRESS",
+  "attendees" : [ ],
+  "speakers" : [ ],
+  "feedback" : [ ]
+}, {
+  "id" : "SESSION-2",
+  "name" : "dscsd",
+  "startTime" : "2025-02-02T00:01:00",
+  "endTime" : "2025-02-02T00:02:00",
+  "status" : "IN_PROGRESS",
+  "attendees" : [ ],
+  "speakers" : [ ],
+  "feedback" : [ ]
+}, {
+  "id" : "1",
+  "name" : "vdsv",
+  "startTime" : "2025-02-02T00:01:00",
+  "endTime" : "2025-02-02T00:02:00",
+  "status" : "NOT_STARTED",
   "attendees" : [ ],
   "speakers" : [ ],
   "feedback" : [ ]

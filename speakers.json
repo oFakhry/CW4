@@ -1,7 +1,8 @@
 [ {
-  "id" : "USR-1733836110707",
-  "name" : "omar",
-  "email" : "omar@gmail.com",
-  "bio" : "",
-  "assignedSessionIds" : [ ]
+  "id" : "SPK001",
+  "name" : "Alice Smith",
+  "email" : "alice@example.com",
+  "bio" : "AI Expert",
+  "assignedSessionIds" : [ ],
+  "password" : "password123"
 } ]

@@ -4,17 +4,26 @@ import java.util.List;
 
 public class ConferenceService {
     private List<Conference> conferences = new ArrayList<>();
-    private final SessionService sessionService; // SessionService dependency
+    final SessionService sessionService; // SessionService dependency
+    private final ConferenceRepository conferenceRepository; // Repository for persistence
 
-    // Constructor to initialize the ConferenceService with SessionService
-    public ConferenceService(SessionService sessionService) {
+    // Constructor to initialize the ConferenceService with dependencies
+    public ConferenceService(SessionService sessionService, ConferenceRepository conferenceRepository) {
         this.sessionService = sessionService;
+        this.conferenceRepository = conferenceRepository;
+        this.conferences = conferenceRepository.loadConferencesFromFile();
     }
 
     // Create a new conference and associate it with a SessionService
     public void createConference(String id, String name, String description, LocalDate startDate, LocalDate endDate) {
-        // Create the conference with the session service
-        conferences.add(new Conference(id, name, description, startDate, endDate, sessionService));
+        Conference conference = new Conference(id, name, description, startDate, endDate, sessionService);
+        conferences.add(conference);
+        saveConferencesToFile(conferences);
+    }
+
+    // Get all conferences
+    public List<Conference> getConferences() {
+        return new ArrayList<>(conferences);
     }
 
     // Register an attendee to a specific conference
@@ -22,6 +31,7 @@ public class ConferenceService {
         for (Conference conference : conferences) {
             if (conference.getName().equalsIgnoreCase(conferenceName)) {
                 conference.addAttendee(attendee);
+                saveConferencesToFile(conferences);
                 return;
             }
         }
@@ -33,6 +43,7 @@ public class ConferenceService {
         for (Conference conference : conferences) {
             if (conference.getName().equalsIgnoreCase(conferenceName)) {
                 conference.addSession(session);
+                saveConferencesToFile(conferences);
                 return;
             }
         }
@@ -48,4 +59,10 @@ public class ConferenceService {
         }
         return new ArrayList<>();
     }
-}
+
+    // Saves the provided list of conferences to the file
+    public void saveConferencesToFile(List<Conference> conferencesToSave) {
+        conferenceRepository.saveConferencesToFile(conferencesToSave);
+        // Update the in-memory list to reflect what was just saved
+        this.conferences = new ArrayList<>(conferencesToSave);
+}}

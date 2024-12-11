@@ -1,15 +1,24 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 
 public class LoginAndRegistrationGUI {
     private final LoginAndRegistration system;
+    private final OrganizerService organizerService;
+    private final ConferenceService conferenceService;
+    private final AttendeeService attendeeService;
 
-    public LoginAndRegistrationGUI(LoginAndRegistration system) {
+    public LoginAndRegistrationGUI(LoginAndRegistration system,
+                                   OrganizerService organizerService,
+                                   ConferenceService conferenceService) {
         this.system = system;
+        this.organizerService = organizerService;
+        this.conferenceService = conferenceService;
+        this.attendeeService = system.getAttendeeService();
+
         initUI();
     }
+
 
     private void initUI() {
         JFrame frame = new JFrame("Conference Management System");
@@ -119,6 +128,20 @@ public class LoginAndRegistrationGUI {
                 People user = system.login(email, password, role);
                 JOptionPane.showMessageDialog(dialog, "Login successful! Welcome, " + user.getName());
                 dialog.dispose();
+
+                if (user instanceof Attendee) {
+                    SwingUtilities.invokeLater(() -> new AttendeeGUI(attendeeService, (Attendee) user));
+                } else if (user instanceof Organizer) {
+                    // Use the shared organizerService and conferenceService from fields
+                    SwingUtilities.invokeLater(() -> {
+                        OrganizerGUI organizerGUI = new OrganizerGUI(organizerService, conferenceService);
+                        organizerGUI.setVisible(true);
+                    });
+                } else if (user instanceof Speaker) {
+                    displayUserInfo(parentFrame, user);
+                } else {
+                    displayUserInfo(parentFrame, user);
+                }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(dialog, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -133,16 +156,43 @@ public class LoginAndRegistrationGUI {
         dialog.setVisible(true);
     }
 
+
+
+    private void displayUserInfo(JFrame parentFrame, People user) {
+        JDialog dialog = new JDialog(parentFrame, "User Information", true);
+        dialog.setSize(300, 200);
+        dialog.setLayout(new GridLayout(4, 1));
+
+        JLabel nameLabel = new JLabel("Name: " + user.getName());
+        JLabel emailLabel = new JLabel("Email: " + user.getEmail());
+        JLabel roleLabel = new JLabel("Role: " + user.getClass().getSimpleName());
+
+        dialog.add(nameLabel);
+        dialog.add(emailLabel);
+        dialog.add(roleLabel);
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> dialog.dispose());
+        dialog.add(closeButton);
+
+        dialog.setVisible(true);
+    }
+
     public static void main(String[] args) {
         // Initialize repositories
         AttendeeRepository attendeeRepo = new AttendeeRepository("attendees.json");
         OrganizerRepository organizerRepo = new OrganizerRepository("organizers.json");
+        OrganizerService organizerService = new OrganizerService(organizerRepo);
         SpeakerRepository speakerRepo = new SpeakerRepository("speakers.json");
-
+        FeedbackRepository feedbackRepo = new FeedbackRepository("feedback.json");
+        SessionRepository sessionRepository = new SessionRepository("sessions.json");
+        SessionService sessionService = new SessionService(sessionRepository);
+        ConferenceRepository conferenceRepo = new ConferenceRepository("conferences.json");
+        ConferenceService ConfService = new ConferenceService(sessionService, conferenceRepo);
         // Initialize LoginAndRegistration system
-        LoginAndRegistration system = new LoginAndRegistration(attendeeRepo, organizerRepo, speakerRepo);
+        LoginAndRegistration system = new LoginAndRegistration(attendeeRepo, organizerRepo, speakerRepo, feedbackRepo);
 
         // Launch GUI
-        SwingUtilities.invokeLater(() -> new LoginAndRegistrationGUI(system));
+        SwingUtilities.invokeLater(() -> new LoginAndRegistrationGUI(system, organizerService, ConfService));
     }
 }

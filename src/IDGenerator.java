@@ -5,6 +5,7 @@ public class IDGenerator {
     private static final AtomicInteger conferenceId = new AtomicInteger(0);
     private static final AtomicInteger sessionId = new AtomicInteger(0);
     private static final AtomicInteger speakerId = new AtomicInteger(0);
+    private static final AtomicInteger organizerId = new AtomicInteger(0);
 
     public static int generateAttendeeId() {
         return attendeeId.incrementAndGet();
@@ -20,5 +21,9 @@ public class IDGenerator {
 
     public static int generateSpeakerId() {
         return speakerId.incrementAndGet();
+    }
+
+    public static int generateOrganizerId() { 
+        return organizerId.incrementAndGet();
     }
 }

@@ -4,10 +4,12 @@ import java.util.Set;
 public class Speaker extends People {
     private String bio;
     private Set<String> assignedSessionIds; // IDs of sessions assigned to the speaker
+    private String password;
 
-    public Speaker(String id, String name, String email, String bio) {
+    public Speaker(String id, String name, String email, String bio, String password) {
         super(id, name, email);
         this.bio = bio;
+        this.password = password;
         this.assignedSessionIds = new HashSet<>();
     }
 
@@ -33,14 +35,6 @@ public class Speaker extends People {
         return sessions;
     }
 
-    // Retrieve the password from the repository
-    public String getPassword(SpeakerRepository speakerRepository) {
-        Speaker speaker = speakerRepository.findById(this.getId());
-        if (speaker != null) {
-            return speakerRepository.getPasswordById(this.getId());
-        }
-        throw new IllegalArgumentException("Speaker not found in the repository.");
-    }
 
     // Getters and Setters
     public String getBio() {
@@ -71,5 +65,13 @@ public class Speaker extends People {
 
     public Set<String> getAssignedSessionIds() {
         return assignedSessionIds;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -8,8 +8,8 @@ public class OrganizerService {
     }
 
     // Create or update an organizer
-    public void createOrUpdateOrganizer(Organizer organizer) {
-        organizerRepository.save(organizer);
+    public void createOrUpdateOrganizer(Organizer organizer, String password) {
+        organizerRepository.save(organizer, password);
     }
 
     // Get an organizer by ID

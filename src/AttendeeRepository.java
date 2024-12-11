@@ -1,7 +1,6 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +16,9 @@ public class AttendeeRepository {
         this.attendees = loadAttendeesFromFile();
     }
 
-    // Save an attendee to the file
+    // Save an attendee
     public void save(Attendee attendee) {
-        // Remove existing attendee with the same ID
         attendees.removeIf(existingAttendee -> existingAttendee.getId().equals(attendee.getId()));
-        // Add the updated/new attendee
         attendees.add(attendee);
         saveAttendeesToFile();
     }
@@ -33,6 +30,19 @@ public class AttendeeRepository {
                 .findFirst()
                 .orElse(null);
     }
+
+    public Attendee findByEmail(String email) {
+        return attendees.stream()
+                .filter(s -> s.getEmail().equals(email))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public String getPasswordByEmail(String email) {
+        Attendee attendee = findByEmail(email);
+        return attendee != null ? attendee.getPassword() : null;
+    }
+
 
     // Get all attendees
     public List<Attendee> findAll() {
@@ -55,7 +65,6 @@ public class AttendeeRepository {
             return objectMapper.readValue(file, new TypeReference<List<Attendee>>() {});
         } catch (IOException e) {
             System.err.println("Error loading attendees from file: " + e.getMessage());
-            e.printStackTrace();
             return new ArrayList<>();
         }
     }
@@ -66,37 +75,6 @@ public class AttendeeRepository {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, attendees);
         } catch (IOException e) {
             System.err.println("Error saving attendees to file: " + e.getMessage());
-            e.printStackTrace();
         }
-    }
-
-    // Write all attendee information to a file in a human-readable format
-    public void writeAllAttendeesToFile(String outputFilePath) {
-        File outputFile = new File(outputFilePath);
-
-        try (var writer = new FileWriter(outputFile)) {
-            writer.write("Attendee Information:\n");
-            for (Attendee attendee : attendees) {
-                writer.write(formatAttendeeDetails(attendee));
-                writer.write("\n--------------------------------------------\n");
-            }
-            System.out.println("All attendees written to file: " + outputFilePath);
-        } catch (IOException e) {
-            System.err.println("Error writing all attendees to file: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    // Helper method to format attendee details
-    private String formatAttendeeDetails(Attendee attendee) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("ID: ").append(attendee.getId()).append("\n");
-        sb.append("Name: ").append(attendee.getName()).append("\n");
-        sb.append("Email: ").append(attendee.getEmail()).append("\n");
-        sb.append("Registered Conferences: ");
-        sb.append(attendee.getRegisteredConferences().stream()
-                .map(Conference::getName)
-                .toList()).append("\n");
-        return sb.toString();
     }
 }

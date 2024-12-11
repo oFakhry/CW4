@@ -121,17 +121,4 @@ public class Session {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "Session{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", status=" + status +
-                ", attendees=" + attendees +
-                ", speakers=" + speakers +
-                ", feedbacks=" + feedbacks +
-                '}';
-    }
 }

@@ -10,13 +10,21 @@ public class SpeakerService {
     }
 
     // Add or update a speaker
-    public void addOrUpdateSpeaker(Speaker speaker, String password) {
-        speakerRepository.save(speaker, password); // Pass the password along when saving the speaker
+    public void addOrUpdateSpeaker(Speaker speaker) {
+        speakerRepository.save(speaker); // Pass the password along when saving the speaker
     }
 
     // Find a speaker by ID
     public Speaker findSpeakerById(String id) {
         return speakerRepository.findById(id);
+    }
+
+    // Find a speaker by name
+    public Speaker getSpeakerByName(String name) {
+        return speakerRepository.findAll().stream()
+                .filter(speaker -> speaker.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Speaker not found with name: " + name));
     }
 
     // Get all speakers
@@ -39,12 +47,12 @@ public class SpeakerService {
     }
 
     // Create or update a speaker profile
-    public void createOrUpdateSpeakerProfile(String speakerId, String name, String bio, String password) {
+    public void createOrUpdateSpeakerProfile(String speakerId, String name, String bio) {
         Speaker speaker = findSpeakerById(speakerId);
         if (speaker == null) {
             throw new IllegalArgumentException("Speaker not found with ID: " + speakerId);
         }
         speaker.createOrUpdateSpeakerProfile(speaker, name, bio); // Update profile info
-        speakerRepository.save(speaker, password); // Save the updated speaker with password
+        speakerRepository.save(speaker); // Save the updated speaker with password
     }
 }

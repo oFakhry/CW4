@@ -10,15 +10,16 @@ public class AttendeeService {
     }
 
     // Register an attendee for a conference
-    public void registerForConference(String attendeeId, Conference conference) {
+    public void registerForConference(String attendeeId, Conference conference, String password) {
         Attendee attendee = attendeeRepository.findById(attendeeId);
         if (attendee != null) {
             attendee.registerForConference(conference);
-            attendeeRepository.save(attendee);
+            attendeeRepository.save(attendee); // Save with the password
         } else {
             throw new IllegalArgumentException("Attendee not found.");
         }
     }
+
 
     // Submit feedback for a conference
     public void submitFeedback(String attendeeId, String conferenceId, String feedbackText) {

@@ -24,10 +24,17 @@ public class SessionService {
         return session;
     }
 
+    // Find a session by name
+    public Session getSessionByName(String name) {
+        return sessionRepository.findAll().stream()
+                .filter(session -> session.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Session not found with name: " + name));
+    }
+
     public List<Session> getAllSessions() {
         return sessionRepository.findAll();
     }
-
 
     public void deleteSession(String sessionId) {
         sessionRepository.deleteById(sessionId);
@@ -40,5 +47,11 @@ public class SessionService {
         session.setEndTime(newEndTime);
         session.setStatus(newStatus);
         sessionRepository.save(session);
+    }
+
+    // New method to save all sessions to the file
+    public void saveSessionsToFile(List<Session> sessions) {
+        // Ensure repository has a method like saveAll
+        sessionRepository.saveAll(sessions);
     }
 }

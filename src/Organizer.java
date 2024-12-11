@@ -4,11 +4,33 @@ import java.util.*;
 public class Organizer extends People {
     private Set<Conference> conferences;
     private Set<Speaker> speakers;
+    private String password; // Add password field
 
-    public Organizer(String id, String name, String email) {
+
+    public Organizer(String id, String name, String email,  String password) {
         super(id, name, email);
         this.conferences = new HashSet<>();
         this.speakers = new HashSet<>();
+        this.password = password; // Initialize password
+
+    }
+
+    // Get the password
+    public String getPassword() {
+        return password;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    // Set a new password
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     // Set up a conference

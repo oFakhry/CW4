@@ -3,7 +3,7 @@ import java.util.*;
 public abstract class People {
     String id;
     String name;
-    private String email;
+    String email;
     private Map<String, Session> sessionSchedule;
 
     public People(String id, String name, String email) {

@@ -26,7 +26,7 @@ public class SessionRepository {
         sessions.removeIf(existingSession -> existingSession.getId().equals(session.getId()));
         // Add the updated/new session
         sessions.add(session);
-        saveSessionsToFile();
+        saveAll(sessions);
     }
 
     // Find a session by ID
@@ -45,7 +45,7 @@ public class SessionRepository {
     // Delete a session by ID
     public void deleteById(String id) {
         sessions.removeIf(session -> session.getId().equals(id));
-        saveSessionsToFile();
+        saveAll(sessions);
     }
 
     // Load sessions from the JSON file
@@ -63,16 +63,17 @@ public class SessionRepository {
         }
     }
 
-    // Save sessions to the JSON file
-    private void saveSessionsToFile() {
+    // Replace saveSessionsToFile() with saveAll(List<Session>)
+    // This method saves all sessions to the JSON file.
+    public void saveAll(List<Session> sessions) {
+        this.sessions = new ArrayList<>(sessions); // Ensure we store a copy
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, sessions);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, this.sessions);
         } catch (IOException e) {
             System.err.println("Error saving sessions to file: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 
     // Write all session information to a file in a human-readable format
     public void writeAllSessionsToFile(String outputFilePath) {
