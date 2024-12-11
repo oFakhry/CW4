@@ -5,25 +5,45 @@ public class OrganizerService {
 
     public OrganizerService(OrganizerRepository organizerRepository) {
         this.organizerRepository = organizerRepository;
+        initializeIdCounter();
     }
 
-    // Create or update an organizer
+    private void initializeIdCounter() {
+        List<Organizer> organizers = organizerRepository.findAll();
+        int maxId = 0;
+        for (Organizer org : organizers) {
+            try {
+                int id = Integer.parseInt(org.getId());
+                if (id > maxId) {
+                    maxId = id;
+                }
+            } catch (NumberFormatException e) {
+                // Handle non-integer IDs if any
+            }
+        }
+        IDGenerator.initializeOrganizerId(maxId);
+    }
+
+    public Organizer createNewOrganizer(String name, String email, String password) {
+        String generatedId = String.valueOf(IDGenerator.generateOrganizerId());
+        Organizer newOrganizer = new Organizer(generatedId, name, email, password);
+        createOrUpdateOrganizer(newOrganizer, password);
+        return newOrganizer;
+    }
+
     public void createOrUpdateOrganizer(Organizer organizer, String password) {
         organizerRepository.save(organizer, password);
     }
 
-    // Get an organizer by ID
     public Organizer getOrganizerById(String id) {
         return organizerRepository.findById(id);
     }
 
-    // Delete an organizer by ID
-    public void deleteOrganizer(String id) {
-        organizerRepository.deleteById(id);
-    }
-
-    // Get all organizers
     public List<Organizer> getAllOrganizers() {
         return organizerRepository.findAll();
+    }
+
+    public void deleteOrganizer(String id) {
+        organizerRepository.deleteById(id);
     }
 }

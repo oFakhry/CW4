@@ -1,18 +1,16 @@
-import java.util.Scanner;
-
 public class LoginAndRegistration {
     private final AttendeeRepository attendeeRepository;
     private final OrganizerRepository organizerRepository;
     private final SpeakerRepository speakerRepository;
+    private final FeedbackRepository feedbackRepository; // Add FeedbackRepository field
     private final AttendeeService attendeeService;
-
 
     public LoginAndRegistration(AttendeeRepository attendeeRepository, OrganizerRepository organizerRepository, SpeakerRepository speakerRepository, FeedbackRepository feedbackRepository) {
         this.attendeeRepository = attendeeRepository;
         this.organizerRepository = organizerRepository;
         this.speakerRepository = speakerRepository;
+        this.feedbackRepository = feedbackRepository; // Initialize FeedbackRepository
         this.attendeeService = new AttendeeService(attendeeRepository, feedbackRepository); // Initialize attendee service
-
     }
 
     // Register a new user
@@ -48,7 +46,6 @@ public class LoginAndRegistration {
         }
     }
 
-
     // Login a user
     public People login(String email, String password, String role) {
         switch (role.toLowerCase()) {
@@ -79,6 +76,11 @@ public class LoginAndRegistration {
 
     public AttendeeService getAttendeeService() {
         return attendeeService;
+    }
+
+    // Add getFeedbackRepository() method
+    public FeedbackRepository getFeedbackRepository() {
+        return feedbackRepository;
     }
 
     // Generate a unique ID

@@ -1,5 +1,8 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +16,9 @@ public class AttendeeRepository {
     public AttendeeRepository(String filePath) {
         this.file = new File(filePath);
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.attendees = loadAttendeesFromFile();
     }
 
@@ -43,7 +49,6 @@ public class AttendeeRepository {
         return attendee != null ? attendee.getPassword() : null;
     }
 
-
     // Get all attendees
     public List<Attendee> findAll() {
         return new ArrayList<>(attendees);
@@ -69,10 +74,15 @@ public class AttendeeRepository {
         }
     }
 
-    // Save attendees to the JSON file
+    // Save attendees to the JSON file using atomic write
     private void saveAttendeesToFile() {
+        File tempFile = new File(file.getAbsolutePath() + ".tmp");
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, attendees);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempFile, attendees);
+            if (file.exists()) {
+                file.delete();
+            }
+            tempFile.renameTo(file);
         } catch (IOException e) {
             System.err.println("Error saving attendees to file: " + e.getMessage());
         }

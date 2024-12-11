@@ -13,9 +13,16 @@ public class Speaker extends People {
         this.assignedSessionIds = new HashSet<>();
     }
 
-    // Add a session ID to the assigned sessions
+    // Add a session ID to the assigned sessions using a string ID
     public void assignSession(String sessionId) {
         assignedSessionIds.add(sessionId);
+    }
+
+    // Add a session to the speaker by passing a Session object
+    public void addSession(Session session) {
+        if (session != null) {
+            assignedSessionIds.add(session.getId());
+        }
     }
 
     // Remove a session ID from the assigned sessions
@@ -34,7 +41,6 @@ public class Speaker extends People {
         }
         return sessions;
     }
-
 
     // Getters and Setters
     public String getBio() {

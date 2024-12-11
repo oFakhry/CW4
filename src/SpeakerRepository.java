@@ -1,8 +1,12 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpeakerRepository {
     private final File file;
@@ -12,6 +16,9 @@ public class SpeakerRepository {
     public SpeakerRepository(String filePath) {
         this.file = new File(filePath);
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.speakers = loadSpeakersFromFile();
     }
 
@@ -19,7 +26,7 @@ public class SpeakerRepository {
     public void save(Speaker speaker) {
         speakers.removeIf(existingSpeaker -> existingSpeaker.getId().equals(speaker.getId()));
         speakers.add(speaker);
-        saveSpeakersToFile();
+        saveAll(speakers);
     }
 
     // Find a speaker by ID
@@ -42,7 +49,6 @@ public class SpeakerRepository {
         return speaker != null ? speaker.getPassword() : null;
     }
 
-
     // Get all speakers
     public List<Speaker> findAll() {
         return new ArrayList<>(speakers);
@@ -51,7 +57,7 @@ public class SpeakerRepository {
     // Delete a speaker by ID
     public void deleteById(String id) {
         speakers.removeIf(speaker -> speaker.getId().equals(id));
-        saveSpeakersToFile();
+        saveAll(speakers);
     }
 
     // Load speakers from the JSON file
@@ -68,13 +74,18 @@ public class SpeakerRepository {
         }
     }
 
-    // Save speakers to the JSON file
-    private void saveSpeakersToFile() {
+    // Save all speakers to the JSON file using atomic write
+    public void saveAll(List<Speaker> speakers) {
+        this.speakers = new ArrayList<>(speakers);
+        File tempFile = new File(file.getAbsolutePath() + ".tmp");
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, speakers);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempFile, this.speakers);
+            if (file.exists()) {
+                file.delete();
+            }
+            tempFile.renameTo(file);
         } catch (IOException e) {
             System.err.println("Error saving speakers to file: " + e.getMessage());
         }
     }
-
 }

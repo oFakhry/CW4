@@ -1,9 +1,9 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -14,11 +14,15 @@ public class OrganizerRepository {
     private List<Organizer> organizers;
     private Map<String, String> passwords;
 
-
     // Constructor
     public OrganizerRepository(String filePath) {
         this.file = new File(filePath);
         this.objectMapper = new ObjectMapper();
+        // Register modules and configure for Java time
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
         this.organizers = loadOrganizersFromFile();
         this.passwords = new HashMap<>();
     }
@@ -43,15 +47,13 @@ public class OrganizerRepository {
         return organizer != null ? organizer.getPassword() : null;
     }
 
-
     // Find an organizer by ID
     public Organizer findById(String id) {
         return organizers.stream()
-                .filter(organizer -> organizer.getId().equals(id))  // Compare using .equals() for String
+                .filter(organizer -> organizer.getId().equals(id))
                 .findFirst()
                 .orElse(null);
     }
-
 
     // Get all organizers
     public List<Organizer> findAll() {
@@ -60,10 +62,9 @@ public class OrganizerRepository {
 
     // Delete an organizer by ID
     public void deleteById(String id) {
-        organizers.removeIf(organizer -> organizer.getId().equals(id));  // Compare using .equals() for String
+        organizers.removeIf(organizer -> organizer.getId().equals(id));
         saveOrganizersToFile();
     }
-
 
     // Load organizers from the JSON file
     private List<Organizer> loadOrganizersFromFile() {
@@ -80,14 +81,19 @@ public class OrganizerRepository {
         }
     }
 
-    // Save organizers to the JSON file
+    // Save organizers to the JSON file using atomic write
     private void saveOrganizersToFile() {
+        File tempFile = new File(file.getAbsolutePath() + ".tmp");
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, organizers);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempFile, organizers);
+            if (file.exists()) {
+                file.delete();
+            }
+            tempFile.renameTo(file);
         } catch (IOException e) {
             System.err.println("Error saving organizers to file: " + e.getMessage());
             e.printStackTrace();
+            // If something goes wrong, tempFile remains. You could delete it if desired.
         }
     }
-
 }

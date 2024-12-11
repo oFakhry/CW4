@@ -16,6 +16,18 @@ public class SessionService {
         return session;
     }
 
+    public Session createSessionForConference(Conference conference, String name, LocalDateTime startTime, LocalDateTime endTime, SessionStatus status) {
+        String sessionId = String.valueOf(IDGenerator.generateSessionId());
+        Session newSession = new Session(sessionId, name, startTime, endTime, status);
+
+        List<Session> allSessions = getAllSessions();
+        allSessions.add(newSession);
+        saveSessionsToFile(allSessions);
+
+        return newSession;
+    }
+
+
     public Session findSessionById(String id) {
         Session session = sessionRepository.findById(id);
         if (session == null) {

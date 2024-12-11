@@ -1,1 +1,31 @@
-[{"id":"1","name":"efsdf","description":"sdfsd","startDate"
+[ {
+  "id" : "1",
+  "name" : "dgssg",
+  "description" : "sgf",
+  "startDate" : "2025-02-02",
+  "endDate" : "2025-02-02",
+  "attendees" : [ ],
+  "speakers" : [ ],
+  "sessionService" : {
+    "allSessions" : [ {
+      "id" : "1",
+      "name" : "asfasdf",
+      "startTime" : "2025-02-02T00:02:00",
+      "endTime" : "2025-02-02T00:03:00",
+      "status" : "NOT_STARTED",
+      "attendees" : [ ],
+      "speakers" : [ ],
+      "feedback" : [ ]
+    } ]
+  },
+  "sessions" : [ {
+    "id" : "1",
+    "name" : "asfasdf",
+    "startTime" : "2025-02-02T00:02:00",
+    "endTime" : "2025-02-02T00:03:00",
+    "status" : "NOT_STARTED",
+    "attendees" : [ ],
+    "speakers" : [ ],
+    "feedback" : [ ]
+  } ]
+} ]

@@ -9,6 +9,30 @@ public class AttendeeService {
         this.feedbackRepository = feedbackRepository;
     }
 
+    public Attendee createNewAttendee(String name, String email, String password) {
+        String generatedId = "A" + IDGenerator.generateAttendeeId();
+        Attendee newAttendee = new Attendee(generatedId, name, email, password);
+        attendeeRepository.save(newAttendee);
+        return newAttendee;
+    }
+
+    private void initializeIdCounter() {
+        List<Attendee> attendees = attendeeRepository.findAll();
+        int maxId = 0;
+        for (Attendee att : attendees) {
+            try {
+                int id = Integer.parseInt(att.getId().replace("A", ""));
+                if (id > maxId) {
+                    maxId = id;
+                }
+            } catch (NumberFormatException e) {
+                // Handle non-integer IDs if any
+            }
+        }
+        IDGenerator.initializeAttendeeId(maxId);
+    }
+
+
     // Register an attendee for a conference
     public void registerForConference(String attendeeId, Conference conference, String password) {
         Attendee attendee = attendeeRepository.findById(attendeeId);
@@ -19,6 +43,24 @@ public class AttendeeService {
             throw new IllegalArgumentException("Attendee not found.");
         }
     }
+
+    public void deregisterFromConference(String attendeeId, String conferenceId) {
+        Attendee attendee = attendeeRepository.findById(attendeeId);
+        if (attendee == null) {
+            throw new IllegalArgumentException("Attendee not found.");
+        }
+
+        // Check if the attendee is currently registered for the conference
+        boolean removed = attendee.getRegisteredConferences().removeIf(c -> c.getId().equals(conferenceId));
+
+        if (!removed) {
+            throw new IllegalArgumentException("Attendee is not registered for the specified conference.");
+        }
+
+        // Save the updated attendee record
+        attendeeRepository.save(attendee);
+    }
+
 
 
     // Submit feedback for a conference

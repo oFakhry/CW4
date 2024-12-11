@@ -1,8 +1,9 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,9 @@ public class FeedbackRepository {
     public FeedbackRepository(String filePath) {
         this.file = new File(filePath);
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.feedbackList = loadFeedbackFromFile();
     }
 
@@ -55,10 +59,15 @@ public class FeedbackRepository {
         }
     }
 
-    // Save feedback to the JSON file
+    // Save feedback to the JSON file using atomic write
     private void saveFeedbackToFile() {
+        File tempFile = new File(file.getAbsolutePath() + ".tmp");
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, feedbackList);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempFile, feedbackList);
+            if (file.exists()) {
+                file.delete();
+            }
+            tempFile.renameTo(file);
         } catch (IOException e) {
             System.err.println("Error saving feedback to file: " + e.getMessage());
         }
